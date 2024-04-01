@@ -1,0 +1,59 @@
+---
+- hosts: web
+  become: true
+  tasks:
+    - name: install apache
+      yum: 
+        name: httpd, php, git
+        state: present
+        update_cache: true
+    - name: start apache service
+      service:
+        name: httpd
+        state: started
+        enabled: true
+    - name: copy index
+      copy:
+        src: files/index.php
+        dest: "{{ document_root_path  }}"
+        owner: root
+        mode: '0644'
+        backup: true
+    - name: deploy index.php
+      git:
+        repo: "{{ repository }}"
+        dest: "{{ document_root_path }}"
+
+    - name: vhost config block
+      block:
+      - name: Copy host config
+        copy:
+          src: files/ansible_site.conf
+          dest: "{{ vhost_config_file }}" 
+          owner: root
+          mode: '0644'
+          backup: true
+        notify: restart apache
+      - name: check config validity
+        command: httpd -t
+      rescue:
+      - name: remove bad config file
+        file:
+          path: "{{ vhost_config_file }}" 
+          state: absent
+      - name: rolling back -ending playbook
+        fail:
+          msg: " Config file vlaidity check has failed. Please corret the config file before running playbook again"
+    - name: Add load config file line 
+      lineinfile:
+        path: "{{ apache_config_file }}"
+        regexp: '^IncludeOptional'
+        line: "IncludeOptional conf.d/*.conf"
+      notify: restart apache
+  handlers: 
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
+    
+        

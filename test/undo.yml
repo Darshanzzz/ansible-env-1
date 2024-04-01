@@ -1,0 +1,20 @@
+---
+
+- hosts: test1
+  become: true
+  tasks:
+
+  - name: remove users
+    user: 
+      name: Jason
+      state: absent
+#    loop: "{{ HR_users }}"
+      
+    
+  - name: remove group
+    group:
+      name: IT
+      state: absent
+    register: group_info
+
+      

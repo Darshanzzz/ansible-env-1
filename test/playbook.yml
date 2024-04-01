@@ -1,0 +1,65 @@
+---
+
+- hosts: test1
+  become: true
+  pre_tasks:
+  - name: Enable firewalld
+    service:
+      name: firewalld
+      state: started
+ 
+  tasks:
+  - name: install apache
+    yum:
+      name: httpd
+      state: latest
+    register: package_info
+    notify: add port firewalld
+
+  - name: copy conf template 
+    template:
+      src: files/httpd.conf.j2
+      dest: /etc/httpd/conf.d/httpd.conf
+#    vars:
+#      server_name: "{{ server_name }}"
+#      listen_port: "{{ listen_port }}"
+    notify: 
+      - restart httpd
+
+  - name: Ensure httpd started
+    service: 
+      name: httpd
+      state: started
+
+  - name: add port firewalld
+    firewalld:
+      port: "{{ listen_port }}/tcp"
+      permanent: true
+      state: enabled
+    notify: restart firewalld
+   
+  - name: add HR group
+    group:
+      name: HR
+      state: present
+    register: group_info
+
+
+
+  - name: add users in HR
+    user:
+      name: "{{ item }}"
+      group: HR
+    when: group_info.state == "present"
+    loop: "{{ HR_users }}"
+  
+  handlers:
+    - name: restart httpd
+      service:
+        name: httpd
+        state: restarted
+
+    - name: restart firewalld
+      service:
+        name: firewalld
+        state: restarted           

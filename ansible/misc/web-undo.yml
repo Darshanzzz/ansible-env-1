@@ -1,0 +1,26 @@
+---
+
+- hosts: web
+  become: true
+  tasks:
+    - name: uninstall apache
+      yum:
+        name: httpd
+        state: absent
+
+    - name: find index files
+      find:
+        paths: /var/www/html
+        patterns: 'index*'
+        recurse: yes
+      register: index_files
+
+
+    - name: remove index files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ index_files.files }}"
+
+
+

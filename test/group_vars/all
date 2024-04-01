@@ -1,0 +1,4 @@
+listen_port: 8080
+server_name: test.example.com
+
+HR_users: [ 'John', 'Lucy', 'Tom' ]

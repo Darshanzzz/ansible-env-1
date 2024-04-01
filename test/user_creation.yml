@@ -1,0 +1,33 @@
+---
+
+- hosts: test1
+  become: true
+  vars_prompt:
+  - name: group
+    prompt: Enter group name
+    private: false
+
+  - name: username
+    prompt: Enter username
+    private: false
+
+  - name: passwd
+    prompt: "Enter password for user"
+    
+  tasks:
+  - name: add group
+    group:
+      name: "{{ group }}"
+      state: present
+    register: group_info
+
+
+  - name: add users in group
+    user:
+      name: "{{ username }}"
+      group: "{{ group }}"
+      password: "{{ passwd | password_hash('sha512') }}"
+    when: group_info.state == "present"
+#    loop: "{{ HR_users }}"
+
+

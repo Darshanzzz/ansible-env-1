@@ -1,0 +1,11 @@
+---
+
+- hosts: web
+  gather_facts: no
+  vars: 
+    my_message: message from the playbook
+  tasks:
+  - name: print out the messsage
+    debug:
+      msg: "{{ my_message }}"
+

@@ -1,0 +1,18 @@
+---
+
+- hosts: web
+  vars:
+    hello: world
+    country: [Korea, China, India, Singapore, Malaysia]
+    fruits: [Apple, Orange, Banana, Durian]
+    age: { Jason: "19", Steve: "43", Jackson: "23" } 
+  tasks:
+    - name: Ansible variable example
+      debug:
+       #msg: "{{ hello }}"
+       #msg: "{{ country[2] }}"
+       #msg: "{{item }}"
+        msg: "{{ item.key }} is {{ item.value }} years old"
+      loop: "{{ age|dict2items }}"
+   
+   

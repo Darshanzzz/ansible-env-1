@@ -1,0 +1,49 @@
+---
+
+- hosts: test1
+  become: true
+  pre_tasks:
+  - name: Enable firewalld
+    service:
+      name: firewalld
+      state: started
+ 
+  tasks:
+  - name: install apache
+    yum:
+      name: httpd
+      state: latest
+    register: package_info
+ 
+  - name:
+    debug:
+      msg: " registed info : {{ package_info }} "
+    when: package_info is succeeded
+
+  - name: copy conf template 
+    template:
+      src: files/httpd.conf.j2
+      dest: /etc/httpd/conf.d/httpd.conf
+    vars:
+      server_name: example.com
+      listen_port: 8080
+    notify: 
+      - restart httpd
+
+  - name: Ensure httpd started
+    service: 
+      name: httpd
+      state: started
+
+  - name: add port 8080 to firewalld
+    firewalld:
+      port: 8080/tcp
+      permanent: true
+      state: enabled
+  handlers:
+    - name: restart httpd
+      service:
+        name: httpd
+        state: restarted
+   
+
