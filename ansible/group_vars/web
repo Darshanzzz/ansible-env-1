@@ -4,4 +4,6 @@ apache_config_file: /etc/httpd/conf/httpd.conf
 
 document_root_path: /var/www/ansible/
 
-repository: /Darshanzzz/ansible-env-1.git
+repo_url: https://raw.githubusercontent.com/Darshanzzz/ansible-env-1/master/ansible/files/index.php
+
+check_interval: 1

@@ -1,0 +1,14 @@
+---
+
+- hosts: web
+  become: true
+  vars:
+    var1: "Hello world"
+  tasks:
+#    - name: run template
+#      template:
+#        src: templates/template1.j2
+#        dest: /tmp/output.txt
+    - name: print
+      debug:
+        var: ansible_facts   
