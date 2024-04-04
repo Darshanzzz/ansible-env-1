@@ -1,14 +1,12 @@
 ---
+# tasks file for common
 
-- name: common tasks
-  hosts: all
-  become: true
-  tasks:
     - name: update /etc/hosts file
       lineinfile:
         path: "{{ hostsfile }}"
         regexp: "{{ item }}$"
-        line: "{{ hostvars[item].ansible_facts.eth1.ipv4.address }} {{ hostvars[item].ansible_facts.hostname }}.{{ domainname }} {{ hostvars[item].ansible_facts.hostname }}" 
+        line: "{{ hostvars[item].ansible_facts.eth1.ipv4.address }} {{ hostvars[item].ansible_facts.hostname }}.{{ domainname }} {{ hostvars[item].ansible_facts
+.hostname }}"
       loop: "{{ groups['all'] }}"
 
     - name: install packages
@@ -21,7 +19,7 @@
 
     - name: install ntp template
       template:
-        src: templates/ntp.j2.conf
+        src: ntp.j2.conf
         dest: "{{ ntp_conf_file }}"
       notify: restart ntp
     - name: start and enable service
@@ -34,10 +32,4 @@
         - firewalld
 
 
-  handlers:
-    - name: restart ntp
-      service:
-        name: ntpd
-        state: restarted
 
-    

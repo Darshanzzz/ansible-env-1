@@ -1,0 +1,15 @@
+---
+# defaults file for web
+
+vhost_config_file: /etc/httpd/conf.d/ansible.conf
+
+apache_config_file: /etc/httpd/conf/httpd.conf
+
+document_root_path: /var/www/ansible/
+
+repo_url: https://raw.githubusercontent.com/Darshanzzz/ansible-env-1/master/ansible/files/index.php
+
+check_interval: 1
+
+haproxy_backend_weight: 100
+

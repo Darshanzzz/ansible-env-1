@@ -1,0 +1,23 @@
+---
+
+- hosts: localhost
+  become: true
+  gather_facts: false
+  tasks:
+
+  - name: set fact
+    set_fact:
+      mode: 0
+
+  - name: import file
+    import_tasks: import.yml
+    when: "mode == 0"
+  - name: set fact
+    set_fact:
+      mode: 0
+  - debug:
+      msg: "This is a native task"
+
+  - name: include file
+    include_tasks: include.yml
+    when: "mode == 0"

@@ -1,4 +1,6 @@
-domainname: "testdomain.com"
+---
+# defaults file for common
+
 hostsfile: "/etc/hosts"
 
 
@@ -8,3 +10,4 @@ ntp_servers:
   - "1.pool.ntp.org"
   - "2.pool.ntp.org"
   - "3.pool.ntp.org"
+

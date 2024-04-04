@@ -1,0 +1,5 @@
+- name: set fact (imported)
+  set_fact: mode="1"
+
+- debug: 
+    msg: "This is the imported task"

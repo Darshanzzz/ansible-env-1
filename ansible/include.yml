@@ -1,0 +1,6 @@
+- name: set_fact(included)
+  set_fact: mode="1"
+
+- debug:
+    msg: "included file"
+

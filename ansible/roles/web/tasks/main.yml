@@ -1,11 +1,8 @@
 ---
-- hosts: web
-  become: true
-  tasks:
     - name: install apache
-      yum: 
-        name: 
-          - httpd 
+      yum:
+        name:
+          - httpd
           - php
           - php-mysql
           - git
@@ -13,7 +10,7 @@
         update_cache: true
       tags:
         - base
-        
+
     - name: start apache service
       service:
         name: httpd
@@ -21,22 +18,18 @@
         enabled: true
       tags:
         - base
-#    - name: rm index
-#      file:
-#        path: "{{ document_root_path  }}index.php"
-#        state: absent
     - name: deploy index.php
       get_url:
         url: "{{ repo_url }}"
         dest: "{{ document_root_path }}"
       tags:
-        - content  
+        - content
     - name: vhost config block
       block:
       - name: Copy host config
         copy:
-          src: files/ansible_site.conf
-          dest: "{{ vhost_config_file }}" 
+          src: ansible_site.conf
+          dest: "{{ vhost_config_file }}"
           owner: root
           mode: '0644'
           backup: true
@@ -46,14 +39,14 @@
       rescue:
       - name: remove bad config file
         file:
-          path: "{{ vhost_config_file }}" 
+          path: "{{ vhost_config_file }}"
           state: absent
       - name: rolling back -ending playbook
         fail:
-          msg: " Config file vlaidity check has failed. Please corret the config file before running playbook again"
+          msg: " Config file vlaidity check has failed. Please corret the configfile before running playbook again"
       tags:
         - vhost
-    - name: Add load config file line 
+    - name: Add load config file line
       lineinfile:
         path: "{{ apache_config_file }}"
         regexp: '^IncludeOptional'
@@ -64,7 +57,7 @@
 
     - name: Install hello world script with db
       copy:
-        src: files/db.php
+        src: db.php
         dest: "{{ document_root_path }}"
         mode: 0775
       tags:
@@ -75,10 +68,4 @@
       tags:
         - security
 
-  handlers: 
-    - name: restart apache
-      service:
-        name: httpd
-        state: restarted
-    
-        
+
